@@ -951,16 +951,17 @@ func (d *Driver) terminate() error {
 		InstanceIds: []*string{&d.InstanceId},
 	})
 
+	if err == nil {
+		return nil
+	}
+
 	if strings.HasPrefix(err.Error(), "unknown instance") ||
 		strings.HasPrefix(err.Error(), "InvalidInstanceID.NotFound") {
 		log.Warn("Remote instance does not exist, proceeding with removing local reference")
 		return nil
 	}
 
-	if err != nil {
-		return fmt.Errorf("unable to terminate instance: %s", err)
-	}
-	return nil
+	return fmt.Errorf("unable to terminate instance: %s", err)
 }
 
 func (d *Driver) isSwarmMaster() bool {
